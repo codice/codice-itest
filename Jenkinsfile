@@ -67,7 +67,7 @@ pipeline {
             }
             steps {
                 withMaven(maven: 'maven-latest', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LARGE_MVN_OPTS} ${LINUX_MVN_RANDOM}') {
-                    sh 'mvn clean install -P push'
+                    sh 'mvn clean install'
                 }
             }
         }
@@ -86,7 +86,7 @@ pipeline {
             }
             steps{
                 withMaven(maven: 'maven-latest', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
-                    sh 'mvn deploy -B -DskipStatic=true -DskipTests=true'
+                    sh 'mvn deploy -B -DskipStatic=true -DskipTests=true -P push'
                 }
             }
         }
