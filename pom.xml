@@ -91,7 +91,7 @@ http://www.gnu.org/licenses/lgpl.html.
                     <artifactId>jib-maven-plugin</artifactId>
                     <configuration>
                         <from>mvn
-                            <image>alpine:3.12</image>
+                            <image>openjdk:8-jre</image>
                         </from>
                         <to>
                             <image>docker.io/codice/itest</image>
