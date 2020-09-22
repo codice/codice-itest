@@ -90,6 +90,9 @@ http://www.gnu.org/licenses/lgpl.html.
                     <groupId>com.google.cloud.tools</groupId>
                     <artifactId>jib-maven-plugin</artifactId>
                     <configuration>
+                        <from>mvn
+                            <image>alpine:3.12</image>
+                        </from>
                         <to>
                             <image>docker.io/codice/itest</image>
                             <tags>
