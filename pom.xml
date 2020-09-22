@@ -10,7 +10,8 @@ See the GNU Lesser General Public License for more details. A copy of the GNU Le
 http://www.gnu.org/licenses/lgpl.html.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.codice</groupId>
@@ -85,7 +86,37 @@ http://www.gnu.org/licenses/lgpl.html.
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <configuration>
+                        <to>
+                            <image>docker.io/codice/itest</image>
+                            <tags>
+                                <tag>${project.version}</tag>
+                                <tag>latest</tag>
+                            </tags>
+                        </to>
+                        <container>
+                            <extraClasspath>/app/tests/*</extraClasspath>
+                            <environment>
+                                <spring.config.location>
+                                    file:/app/tests/classes/,file:/app/tests/classes/,file:/app/config/
+                                </spring.config.location>
+                            </environment>
+                            <volumes>
+                                <path>/app/tests</path>
+                                <path>/app/config</path>
+                            </volumes>
+                        </container>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -120,29 +151,10 @@ http://www.gnu.org/licenses/lgpl.html.
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <configuration>
-                    <to>
-                        <image>codice-itest</image>
-                        <tags>
-                            <tag>${project.version}</tag>
-                            <tag>latest</tag>
-                        </tags>
-                    </to>
-                    <container>
-                        <extraClasspath>/app/tests/*</extraClasspath>
-                        <environment>
-                            <spring.config.location>file:/app/tests/classes/,file:/app/tests/classes/,file:/app/config/</spring.config.location>
-                        </environment>
-                        <volumes>
-                            <path>/app/tests</path>
-                            <path>/app/config</path>
-                        </volumes>
-                    </container>
-                </configuration>
                 <executions>
                     <execution>
                         <id>build-image</id>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>dockerBuild</goal>
                         </goals>
@@ -160,7 +172,36 @@ http://www.gnu.org/licenses/lgpl.html.
                     <pushChanges>false</pushChanges>
                 </configuration>
             </plugin>
-			
+
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>codice</id>
+            <url>https://artifacts.codice.org/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+    <profiles>
+        <profile>
+            <id>push</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>push-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

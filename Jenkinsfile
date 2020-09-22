@@ -67,7 +67,7 @@ pipeline {
             }
             steps {
                 withMaven(maven: 'maven-latest', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LARGE_MVN_OPTS} ${LINUX_MVN_RANDOM}') {
-                    sh 'mvn clean install'
+                    sh 'mvn clean install -P push'
                 }
             }
         }
