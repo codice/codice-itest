@@ -20,6 +20,7 @@ pipeline {
         GITHUB_USERNAME = 'codice'
         GITHUB_TOKEN = credentials('github-api-cred')
         GITHUB_REPONAME = 'codice-itest'
+        DOCKERHUB_CREDS = credentials ('dockerhub-codicebot')
     }
     stages {
         stage('Setup') {
@@ -84,9 +85,11 @@ pipeline {
                     environment name: 'JENKINS_ENV', value: 'prod'
                 }
             }
-            steps{
-                withMaven(maven: 'maven-latest', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
-                    sh 'mvn deploy -B -DskipStatic=true -DskipTests=true -P push'
+        steps{
+                withCredentials([usernameColonPassword(credentialsId: 'dockerhub-codicebot', variable: 'DOCKERHUB_TOKEN')]) {
+                    withMaven(maven: 'maven-latest', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
+                        sh 'mvn deploy -B -DskipStatic=true -DskipTests=true -Djib.to.auth.username=$DOCKERHUB_CREDS_USR -Djib.to.auth.password=$DOCKERHUB_CREDS_PSW -P push'
+                    }
                 }
             }
         }
