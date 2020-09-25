@@ -61,7 +61,7 @@ Below is an example `pom.xml` block which does this using the `jib` maven plugin
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
                     <from>
-                        <image>docker://codice-itest:0.0.1</image>
+                        <image>docker.io/codice/itest:0.0.1</image>
                     </from>
                     <to>
                         <image>integrationtest-example</image>
