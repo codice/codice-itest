@@ -15,7 +15,7 @@ http://www.gnu.org/licenses/lgpl.html.
 
     <groupId>org.codice</groupId>
     <artifactId>codice-itest</artifactId>
-    <version>0.0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <spring.version>5.2.8.RELEASE</spring.version>
@@ -30,7 +30,7 @@ http://www.gnu.org/licenses/lgpl.html.
         <url>https://github.com/codice/codice-itest</url>
         <connection>scm:git:https://github.com/codice/codice-itest.git</connection>
         <developerConnection>scm:git:https://github.com/codice/codice-itest.git</developerConnection>
-        <tag>codice-itest-0.0.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
