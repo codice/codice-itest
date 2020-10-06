@@ -31,8 +31,9 @@ final class LoggingDiagnosticTestReporter implements Consumer<TestResult> {
         String formattedResult = testResultFormatter.apply(testResult);
 
         switch (testResult.getTestStatus()) {
-            case PASS:
-            case FAIL: logger.info(formattedResult);
+            case PASS: logger.info(formattedResult);
+                break;
+            case FAIL: logger.warn(formattedResult);
                 break;
             case ERROR: logger.error(formattedResult);
         }
