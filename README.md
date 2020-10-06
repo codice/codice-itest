@@ -32,8 +32,6 @@ you implement a test:
    tests.
 3) Use the standard JUnit assertions classes to validate/verify test results.
 
-###### *See the example code in `../codice-itest-example`
-
 ##### Docker Image
 Tests are executed using the `codice-itest` Docker image which is built as part of `mvn clean install`.
 
