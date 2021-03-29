@@ -32,11 +32,15 @@ public final class RestDiagnosticTestReporter implements Consumer<TestResult> {
 
     private Function<TestResult, String> testResultFormatter;
 
+    private ExitCodeReporter exitCodeReporter;
+
     private Logger logger = LoggerFactory.getLogger(RestDiagnosticTestReporter.class);
 
-    public RestDiagnosticTestReporter(RestTemplate restTemplate, String logstashUrl, Function<TestResult, String> testResultFormatter) {
+    public RestDiagnosticTestReporter(RestTemplate restTemplate, String logstashUrl,
+            ExitCodeReporter exitCodeReporter, Function<TestResult, String> testResultFormatter) {
         this.restTemplate = restTemplate;
         this.logstashUrl = logstashUrl;
+        this.exitCodeReporter = exitCodeReporter;
         this.testResultFormatter = testResultFormatter;
     }
 
@@ -57,5 +61,6 @@ public final class RestDiagnosticTestReporter implements Consumer<TestResult> {
                     response);
             logger.error(error);
         }
+        exitCodeReporter.register(testResult.getTestStatus());
     }
 }

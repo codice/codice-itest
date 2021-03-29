@@ -46,23 +46,28 @@ public class TestReporterConfiguration {
         return new SlackFormatter();
     }
 
+    @Bean
+    public ExitCodeReporter exitCodeReporter(){
+        return new ExitCodeReporter();
+    }
+
     @Bean("testReporter")
     @ConditionalOnProperty(prefix="itest.reporter", name="logger")
     public Consumer<TestResult> loggingDiagnosticTestReporter() {
         Logger logger = LoggerFactory.getLogger(loggerName);
-        return new LoggingDiagnosticTestReporter(logger, toStringFormatter());
+        return new LoggingDiagnosticTestReporter(logger, exitCodeReporter(), toStringFormatter());
     }
 
     @Bean("testReporter")
     @ConditionalOnMissingBean
     public Consumer<TestResult> defaultLoggingDiagnosticTestReporter() {
         Logger logger = LoggerFactory.getLogger(LoggingDiagnosticTestReporter.class);
-        return new LoggingDiagnosticTestReporter(logger, toStringFormatter());
+        return new LoggingDiagnosticTestReporter(logger, exitCodeReporter(), toStringFormatter());
     }
 
     @Bean
     @ConditionalOnProperty(prefix="itest.reporter", name="url")
     public Consumer<TestResult> restDiagnosticTestReporter() {
-        return new RestDiagnosticTestReporter(restTemplate(), logstashUrl, slackFormatter());
+        return new RestDiagnosticTestReporter(restTemplate(), logstashUrl, exitCodeReporter(), slackFormatter());
     }
 }
