@@ -15,7 +15,7 @@ http://www.gnu.org/licenses/lgpl.html.
 
     <groupId>org.codice</groupId>
     <artifactId>codice-itest</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <properties>
         <spring.version>5.2.8.RELEASE</spring.version>
@@ -89,7 +89,7 @@ http://www.gnu.org/licenses/lgpl.html.
                     <groupId>com.google.cloud.tools</groupId>
                     <artifactId>jib-maven-plugin</artifactId>
                     <configuration>
-                        <from>mvn
+                        <from>
                             <image>openjdk:8-jre</image>
                         </from>
                         <to>
