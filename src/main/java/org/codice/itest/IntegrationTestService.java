@@ -13,6 +13,7 @@ package org.codice.itest;
 import org.codice.itest.api.IntegrationTest;
 import org.codice.itest.api.TestResult;
 import org.codice.itest.api.TestResultFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,9 @@ final class IntegrationTestService implements CommandLineRunner {
 
     private TestResultFactory testResultFactory;
 
+    @Value("${itest.max.execution.minutes:#{10}}")
+    private int maxExecutionMinutes;
+
     /**
      *
      * @param tests - The set of all DiagnosticTest objects found in the Spring application context.
@@ -69,6 +73,6 @@ final class IntegrationTestService implements CommandLineRunner {
         this.tests.forEach(test -> executorService.execute(new TestExecutorTask(test,
                 testResultListenerList, testResultFactory)));
         executorService.shutdown();
-        executorService.awaitTermination(120, TimeUnit.SECONDS);
+        executorService.awaitTermination(maxExecutionMinutes, TimeUnit.MINUTES);
     }
 }

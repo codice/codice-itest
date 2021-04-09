@@ -18,6 +18,7 @@ other. Default is a randomly-chosen value.
 `LoggingIntegrationTestReporter` logger will be used.
 * `itest.reporter.url` - the url of an endpoint to send test results to. By default, no attempt will
 be made send test results to any endpoint.
+* `itest.max.execution.minutes` - the maximum number of minutes tests will run for. Default is 10.
 
 ##### Implementing Tests
 In this framework, tests are POJOs. Each class is a single test. Common code can reside in a parent class. Here's how 
