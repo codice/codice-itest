@@ -64,7 +64,7 @@ final class TestResultFactoryImpl implements TestResultFactory {
     private void logTestResultCommonFields(String testName, Instant startTime, Instant endTime) {
         MDC.clear();
         MDC.put(TEST_NAME, testName);
-        MDC.put(START_TIME, startTime.toString());
-        MDC.put(END_TIME, endTime.toString());
+        MDC.put(START_TIME, String.valueOf(startTime));
+        MDC.put(END_TIME, String.valueOf(endTime));
     }
 }

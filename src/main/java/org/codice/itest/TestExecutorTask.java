@@ -45,35 +45,17 @@ final class TestExecutorTask implements Runnable {
      */
     @Override
     public void run() {
-        String testName = null;
-
-        Instant beforeTest = null;
-        Instant afterTest = null;
+        String testName = diagnosticTest.getName();
+        Instant beforeTest = Instant.now();
         try {
-            testName = diagnosticTest.getName();
-
             diagnosticTest.setup();
-            beforeTest = Instant.now();
             diagnosticTest.test();
-            afterTest = Instant.now();
-
-            this.notify(testResultFactory.pass(testName, beforeTest, afterTest));
+            diagnosticTest.cleanup();
+            this.notify(testResultFactory.pass(testName, beforeTest, Instant.now()));
         } catch (AssertionError e) {
-            if(beforeTest!=null && afterTest==null)
-                afterTest = Instant.now();
-            this.notify(testResultFactory.fail(testName, e.getMessage(), beforeTest, afterTest));
+            this.notify(testResultFactory.fail(testName, e.getMessage(), beforeTest, Instant.now()));
         } catch (Throwable t) {
-            if(beforeTest!=null && afterTest==null)
-                afterTest = Instant.now();
-            this.notify(testResultFactory.error(testName, t, beforeTest, afterTest));
-        } finally {
-            try {
-                diagnosticTest.cleanup();
-            } catch (Exception e) {
-                if(beforeTest!=null && afterTest==null)
-                    afterTest = Instant.now();
-                this.notify(testResultFactory.error(testName, e, beforeTest, afterTest));
-            }
+            this.notify(testResultFactory.error(testName, t, beforeTest, Instant.now()));
         }
     }
 
