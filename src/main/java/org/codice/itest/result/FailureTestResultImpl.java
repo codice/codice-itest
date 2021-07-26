@@ -19,11 +19,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codice.itest.api.TestStatus;
 
 final class FailureTestResultImpl extends BaseTestResult {
-    private String failMessage;
+    private final String failMessage;
+    private final String stackTrace;
 
-    FailureTestResultImpl(UUID runId, String testName, String failMessage, Instant startTime, Instant endTime) {
+    FailureTestResultImpl(UUID runId, String testName, String failMessage, String stackTrace, Instant startTime, Instant endTime) {
         super(runId, testName, TestStatus.FAIL, startTime,endTime);
         this.failMessage = failMessage;
+        this.stackTrace = stackTrace;
     }
 
     @Override
@@ -32,6 +34,7 @@ final class FailureTestResultImpl extends BaseTestResult {
                 .append(super.getTestStatus())
                 .append(super.getTestName())
                 .append(this.getFailMessage())
+                .append(this.getStackTrace())
                 .append(super.getStartTime())
                 .append(this.getDuration())
                 .toString();
@@ -55,7 +58,8 @@ final class FailureTestResultImpl extends BaseTestResult {
 
         return new EqualsBuilder().append(super.getRunId(), testResult.getRunId())
                 .append(super.getTestName(), testResult.getTestName())
-                .append(this.getFailMessage(), testResult.failMessage)
+                .append(this.getFailMessage(), testResult.getFailMessage())
+                .append(this.getStackTrace(), testResult. getStackTrace())
                 .append(super.getTestStatus(), testResult.getTestStatus())
                 .append(this.getStartTime(), testResult.getStartTime())
                 .append(this.getDuration(), testResult.getDuration())
@@ -68,6 +72,7 @@ final class FailureTestResultImpl extends BaseTestResult {
                 .append(super.getTestName())
                 .append(super.getTestStatus())
                 .append(this.getFailMessage())
+                .append(this.getStackTrace())
                 .append(this.getStartTime())
                 .append(this.getDuration())
                 .build();
@@ -76,4 +81,6 @@ final class FailureTestResultImpl extends BaseTestResult {
     public String getFailMessage() {
         return this.failMessage;
     }
+
+    private String getStackTrace() { return stackTrace; }
 }

@@ -20,7 +20,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.codice.itest.api.TestStatus;
 
 final class ErrorTestResultImpl extends BaseTestResult {
-    private String stackTrace;
+    private final String stackTrace;
 
     public ErrorTestResultImpl(UUID runId, String testName, Throwable throwable, Instant startTime, Instant endTime) {
         super(runId, testName, TestStatus.ERROR, startTime,endTime);

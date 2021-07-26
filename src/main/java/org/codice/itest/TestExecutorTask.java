@@ -22,11 +22,11 @@ import java.util.function.Consumer;
  * A sub-class of Runnable that handles the actual execution of each test.
  */
 final class TestExecutorTask implements Runnable {
-    private IntegrationTest diagnosticTest;
+    private final IntegrationTest diagnosticTest;
 
-    private List<Consumer<TestResult>> testResultListenerList;
+    private final List<Consumer<TestResult>> testResultListenerList;
 
-    private TestResultFactory testResultFactory;
+    private final TestResultFactory testResultFactory;
 
     /**
      * @param diagnosticTest - An instance of DiagnosticTest that is ready to be executed.
@@ -53,14 +53,13 @@ final class TestExecutorTask implements Runnable {
             diagnosticTest.cleanup();
             this.notify(testResultFactory.pass(testName, beforeTest, Instant.now()));
         } catch (AssertionError e) {
-            this.notify(testResultFactory.fail(testName, e.getMessage(), beforeTest, Instant.now()));
+            this.notify(testResultFactory.fail(testName, e, beforeTest, Instant.now()));
         } catch (Throwable t) {
             this.notify(testResultFactory.error(testName, t, beforeTest, Instant.now()));
         }
     }
 
     private void notify(TestResult testResult) {
-        testResultListenerList.stream()
-                .forEach(l -> l.accept(testResult));
+        testResultListenerList.forEach(l -> l.accept(testResult));
     }
 }
