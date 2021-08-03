@@ -50,16 +50,22 @@ final class TestExecutorTask implements Runnable {
         try {
             diagnosticTest.setup();
             diagnosticTest.test();
-            diagnosticTest.cleanup();
             this.notify(testResultFactory.pass(testName, beforeTest, Instant.now()));
         } catch (AssertionError e) {
             this.notify(testResultFactory.fail(testName, e, beforeTest, Instant.now()));
         } catch (Throwable t) {
             this.notify(testResultFactory.error(testName, t, beforeTest, Instant.now()));
         }
+        finally {
+            try {
+                diagnosticTest.cleanup();
+            } catch (Exception e) {
+                this.notify(testResultFactory.error(testName, e, beforeTest, Instant.now()));
+            }
+        }
     }
 
     private void notify(TestResult testResult) {
-        testResultListenerList.forEach(l -> l.accept(testResult));
+        testResultListenerList.forEach(listener -> listener.accept(testResult));
     }
 }
