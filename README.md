@@ -15,7 +15,7 @@ will be executed in the order given. If not provided all tests beans will be exe
 * `itest.result.runId` - A UUID that allows the caller to associate a group of tests with each 
 other. Default is a randomly-chosen value.
 * `itest.reporter.logger` - the name of a logger to report test results to. If not supplied then 
-`LoggingIntegrationTestReporter` logger will be used.
+`LoggingDiagnosticTestReporter` logger will be used.
 * `itest.reporter.url` - the url of an endpoint to send test results to. By default, no attempt will
 be made send test results to any endpoint.
 * `itest.max.execution.minutes` - the maximum number of minutes tests will run for. Default is 10.
