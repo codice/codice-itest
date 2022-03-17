@@ -1,12 +1,12 @@
-#### Integration Test Framework
+# Integration Test Framework
 
-##### Description
+## Description
 This component provides a simple framework for integration testing. It's intended to be used in end-to-end system 
 testing against a deployed system, with minimal mocking. It provides a framework for test execution and reporting, 
 leaving the test-developer to use whichever tools they prefer for the actual testing. We follow the patterns established
 by JUnit for assertions and matching.
 
-##### Command Line Options
+## Command Line Options
 This component supports several arguments, all of which are optional. They are:
 
 * `itest.threads` - the number of execution threads to run the tests with. Default is 1.
@@ -20,7 +20,7 @@ other. Default is a randomly-chosen value.
 be made send test results to any endpoint.
 * `itest.max.execution.minutes` - the maximum number of minutes tests will run for. Default is 10.
 
-##### Implementing Tests
+## Implementing Tests
 In this framework, tests are POJOs. Each class is a single test. Common code can reside in a parent class. Here's how 
 you implement a test:
 
@@ -33,7 +33,20 @@ you implement a test:
    tests.
 3) Use the standard JUnit assertions classes to validate/verify test results.
 
-##### Docker Image
+## Spring Configuration
+### Internal Property Files
+The jib plugin will copy any Spring property files under `src/resources` in the source code to `/app/resources` in the container.
+
+### External Property Files
+For tests that require environment-specific configuration, those can be placed into an `application.properties` or
+`application.yaml` file on the local system and mapped into the `/app/config` Docker volume. The command below assumes
+that a configuration file was placed into the `config` folder under the current working directory:
+
+```
+    docker run -v ${PWD}/config:/app/config codice-itest-example
+```
+
+## Docker Image
 Tests are executed using the `codice-itest` Docker image which is built as part of `mvn clean install`.
 
 The `codice-itest` image defines a bind volume so that tests, and their dependencies, can be mapped there. 
@@ -41,7 +54,7 @@ This will make the classes available on the JVM classpath. However, in order for
 Spring, we need to give Spring the package hierarchy from which to start scanning. We do this with the 
 `itest.packagescan` configuration property, which defaults to `org.codice`. 
 
-###### Example Test Execution
+### Example Test Execution
 In order to execute the tests, the Docker image needs access to the jar that contains the tests as well as any 
 dependencies. We use a Docker bind-volume at `/app/tests` to do this. This Docker command will execute all tests under 
 `com.mytests` from the jar files found in the `target` folder under the current working directory:
@@ -93,12 +106,4 @@ Now we can run these tests with a simple command:
 
 ```
     docker run codice-itest-example
-```
-
-For tests that require environment-specific configuration, those can be placed into an `application.properties` or
-`application.yaml` file on the local system and mapped into the `/app/config` Docker volume. The command below assumes 
-that a configuration file was placed into the `config` folder under the current working directory:
-
-```
-    docker run -v ${PWD}/config:/app/config codice-itest-example
 ```
