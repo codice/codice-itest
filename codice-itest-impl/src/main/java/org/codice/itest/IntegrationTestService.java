@@ -13,6 +13,7 @@ package org.codice.itest;
 import org.codice.itest.api.IntegrationTest;
 import org.codice.itest.api.TestResult;
 import org.codice.itest.api.TestResultFactory;
+import org.codice.itest.config.ITestConfigurationProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -44,9 +45,7 @@ final class IntegrationTestService implements CommandLineRunner {
 
     private TestResultFactory testResultFactory;
 
-    @Value("${itest.max.execution.minutes:#{10}}")
-    private int maxExecutionMinutes;
-
+    private ITestConfigurationProperties iTestConfigurationProperties;
     /**
      *
      * @param tests - The set of all DiagnosticTest objects found in the Spring application context.
@@ -56,11 +55,13 @@ final class IntegrationTestService implements CommandLineRunner {
     public IntegrationTestService(Stream<IntegrationTest> tests,
                                   List<Consumer<TestResult>> testResultListenerList,
                                   TestResultFactory testResultFactory,
-                                  ExecutorService executorService) {
+                                  ExecutorService executorService,
+                                  ITestConfigurationProperties iTestConfigurationProperties) {
         this.tests = tests;
         this.testResultListenerList = testResultListenerList;
         this.testResultFactory = testResultFactory;
         this.executorService = executorService;
+        this.iTestConfigurationProperties = iTestConfigurationProperties;
     }
 
     /**
@@ -73,6 +74,6 @@ final class IntegrationTestService implements CommandLineRunner {
         this.tests.forEach(test -> executorService.execute(new TestExecutorTask(test,
                 testResultListenerList, testResultFactory)));
         executorService.shutdown();
-        executorService.awaitTermination(maxExecutionMinutes, TimeUnit.MINUTES);
+        executorService.awaitTermination(iTestConfigurationProperties.maxExecutionMinutes(), TimeUnit.MINUTES);
     }
 }

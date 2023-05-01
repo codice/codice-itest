@@ -1,205 +1,126 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-Copyright (c) Codice Foundation
-
-This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
-as published by the Free Software Foundation, either version 3 of the License, or any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
-http://www.gnu.org/licenses/lgpl.html.
-
--->
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.codice</groupId>
-    <artifactId>codice-itest</artifactId>
-    <version>2.0.3</version>
-
-    <properties>
-        <spring.version>5.3.26</spring.version>
-        <springboot.version>3.0.2</springboot.version>
-        <codice-itest-api.version>2.0.1</codice-itest-api.version>
-        <gson.version>2.9.0</gson.version>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven.compiler.release>17</maven.compiler.release>
-        <maven.release.plugin.version>3.0.0-M1</maven.release.plugin.version>
-    </properties>
-
-    <scm>
-        <url>https://github.com/codice/codice-itest</url>
-        <connection>scm:git:https://github.com/codice/codice-itest.git</connection>
-        <developerConnection>scm:git:https://github.com/codice/codice-itest.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <url>${snapshots.repository.url}</url>
-        </snapshotRepository>
-        <repository>
-            <id>releases</id>
-            <url>${releases.repository.url}</url>
-        </repository>
-    </distributionManagement>
-
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codice</groupId>
+  <artifactId>codice-itest</artifactId>
+  <version>3.0.0</version>
+  <packaging>pom</packaging>
+  <name>Codice :: ITest</name>
+  <description>Parent pom.xml for the Codice-ITest component</description>
+      
+  <properties>
+    <java.version>17</java.version>
+    <maven-deploy-plugin.version>2.8</maven-deploy-plugin.version>
+    <maven-surfire-plugin.version>3.0.0-M7</maven-surfire-plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+    <maven.compiler.release>17</maven.compiler.release>
+    <maven.release.plugin.version>3.0.0-M1</maven.release.plugin.version>
+    <spring.version>5.3.27</spring.version>
+    <spring-boot.version>3.0.6</spring-boot.version>
+    <commons-lang3.version>3.12.0</commons-lang3.version>
+    <gson.version>2.10.1</gson.version>
+  </properties>
+      
+  <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <version>${springboot.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codice</groupId>
-            <artifactId>codice-itest-api</artifactId>
-            <version>${codice-itest-api.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
-        </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+                  
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${gson.version}</version>
+      </dependency>
+                  
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
+      </dependency>
     </dependencies>
+        
+  </dependencyManagement>
+  <modules>
+    <module>codice-itest-api</module>
+    <module>codice-itest-impl</module>
+    <module>codice-itest-autoconfigure</module>
+    <module>codice-itest-starter</module>
+    <module>codice-itest-archetype</module>
+  </modules>
+      
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+      </plugin>
+                  
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>${maven.release.plugin.version}</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <preparationGoals>clean verify install</preparationGoals>
+          <pushChanges>false</pushChanges>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.google.cloud.tools</groupId>
-                    <artifactId>jib-maven-plugin</artifactId>
-                    <configuration>
-                        <from>
-                            <image>gcr.io/distroless/java17-debian11:nonroot</image>
-                        </from>
-                        <to>
-                            <image>docker.io/codice/itest</image>
-                            <tags>
-                                <tag>${project.version}</tag>
-                                <tag>latest</tag>
-                            </tags>
-                        </to>
-                        <container>
-                            <extraClasspath>/app/tests/*</extraClasspath>
-                            <environment>
-                                <spring.config.location>
-                                    file:/app/resources/,file:/app/config/
-                                </spring.config.location>
-                            </environment>
-                            <volumes>
-                                <path>/app/tests</path>
-                                <path>/app/config</path>
-                            </volumes>
-                        </container>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+  <repositories>
+    <repository>
+      <id>codice</id>
+      <url>https://artifacts.codice.org/content/repositories/releases/</url>
+    </repository>
+  </repositories>
+      
+  <scm>
+    <url>https://github.com/codice/codice-itest</url>
+    <connection>scm:git:https://github.com/codice/codice-itest.git</connection>
+    <developerConnection>scm:git:https://github.com/codice/codice-itest.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+      
+  <distributionManagement>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <url>${snapshots.repository.url}</url>
+    </snapshotRepository>
+            
+    <repository>
+      <id>releases</id>
+      <url>${releases.repository.url}</url>
+    </repository>
+  </distributionManagement>
+
+  <profiles>
+    <profile>
+      <id>push</id>
+      <build>
         <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>build-image</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>dockerBuild</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven.release.plugin.version}</version>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <preparationGoals>clean verify install</preparationGoals>
-                    <pushChanges>false</pushChanges>
-                </configuration>
-            </plugin>
-
+          <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>push-image</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
-    <repositories>
-        <repository>
-            <id>codice</id>
-            <url>https://artifacts.codice.org/content/repositories/releases/</url>
-        </repository>
-    </repositories>
-
-    <profiles>
-        <profile>
-            <id>push</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.google.cloud.tools</groupId>
-                        <artifactId>jib-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>push-image</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+      </build>
+    </profile>
+  </profiles>
 </project>
