@@ -20,14 +20,10 @@ final class LoggingDiagnosticTestReporter implements Consumer<TestResult> {
 
     private Logger logger;
 
-    private ExitCodeReporter exitCodeReporter;
-
     private Function<TestResult, String> testResultFormatter;
 
-    public LoggingDiagnosticTestReporter(Logger logger, ExitCodeReporter exitCodeReporter,
-                                         Function<TestResult, String> testResultFormatter) {
+    public LoggingDiagnosticTestReporter(Logger logger, Function<TestResult, String> testResultFormatter) {
         this.logger = logger;
-        this.exitCodeReporter = exitCodeReporter;
         this.testResultFormatter = testResultFormatter;
     }
 
@@ -41,6 +37,5 @@ final class LoggingDiagnosticTestReporter implements Consumer<TestResult> {
                 break;
             case ERROR: logger.error(formattedResult);
         }
-        exitCodeReporter.register(testResult.getTestStatus());
     }
 }

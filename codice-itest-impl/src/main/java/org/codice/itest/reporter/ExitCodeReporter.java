@@ -10,17 +10,22 @@
  */
 package org.codice.itest.reporter;
 
-import com.google.gson.Gson;
-import org.codice.itest.api.TestResult;
+import org.codice.itest.api.TestStatus;
+import org.springframework.boot.ExitCodeGenerator;
 
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class SlackFormatter implements Function<TestResult, String> {
+public class ExitCodeReporter implements ExitCodeGenerator {
 
-    private Gson gson = new Gson();
+    private List<Integer> exitCodeMappings = new ArrayList<>();
 
-    @Override
-    public String apply(TestResult testResult) {
-        return gson.toJson(testResult);
+    public void register(TestStatus testStatus) {
+        exitCodeMappings.add(testStatus.getReturnCode());
+    }
+
+    public int getExitCode() {
+        return Collections.max(exitCodeMappings);
     }
 }

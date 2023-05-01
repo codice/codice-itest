@@ -13,6 +13,7 @@ package org.codice.itest.result;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.codice.itest.config.ITestConfigurationProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +23,11 @@ import org.codice.itest.api.TestResultFactory;
 
 @Configuration
 public class IntegrationTestResultConfiguration {
-    @Value("${itest.result.runid:#{null}}")
-    private String runId;
+    private ITestConfigurationProperties iTestConfigurationProperties;
+
+    public IntegrationTestResultConfiguration(ITestConfigurationProperties iTestConfigurationProperties) {
+        this.iTestConfigurationProperties = iTestConfigurationProperties;
+    }
 
     /**
      * @return an implementation of TestResultFactory
@@ -41,6 +45,6 @@ public class IntegrationTestResultConfiguration {
      */
     @Bean
     public UUID runId() {
-        return Optional.ofNullable(runId).map(UUID::fromString).orElse(UUID.randomUUID());
+        return Optional.ofNullable(iTestConfigurationProperties.runId()).map(UUID::fromString).orElse(UUID.randomUUID());
     }
 }

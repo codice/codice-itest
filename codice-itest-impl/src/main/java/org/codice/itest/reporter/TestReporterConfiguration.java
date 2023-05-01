@@ -10,40 +10,23 @@
  */
 package org.codice.itest.reporter;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import org.codice.itest.api.TestResult;
+import org.codice.itest.config.ITestConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.function.Consumer;
 
 @Configuration
 public class TestReporterConfiguration {
-    @Value("${itest.reporter.url:#{null}}")
-    private String logstashUrl;
+    private ITestConfigurationProperties iTestConfigurationProperties;
 
-    @Value("${itest.reporter.logger:#{null}}")
-    private String loggerName;
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
-    @Bean
-    public Function<TestResult, String> toStringFormatter(){
-        return new ToStringFormatter();
-    }
-
-    @Bean
-    public SlackFormatter slackFormatter(){
-        return new SlackFormatter();
+    public TestReporterConfiguration(ITestConfigurationProperties iTestConfigurationProperties) {
+        this.iTestConfigurationProperties = iTestConfigurationProperties;
     }
 
     @Bean
@@ -52,22 +35,22 @@ public class TestReporterConfiguration {
     }
 
     @Bean("testReporter")
-    @ConditionalOnProperty(prefix="itest.reporter", name="logger")
+    @ConditionalOnProperty(prefix="codice.itest", name="loggerName")
     public Consumer<TestResult> loggingDiagnosticTestReporter() {
-        Logger logger = LoggerFactory.getLogger(loggerName);
-        return new LoggingDiagnosticTestReporter(logger, exitCodeReporter(), toStringFormatter());
+        System.out.println(iTestConfigurationProperties.toString());
+        Logger logger = LoggerFactory.getLogger(iTestConfigurationProperties.loggerName());
+        return new LoggingDiagnosticTestReporter(logger, (tr) -> tr.toString());
     }
 
     @Bean("testReporter")
     @ConditionalOnMissingBean
     public Consumer<TestResult> defaultLoggingDiagnosticTestReporter() {
         Logger logger = LoggerFactory.getLogger(LoggingDiagnosticTestReporter.class);
-        return new LoggingDiagnosticTestReporter(logger, exitCodeReporter(), toStringFormatter());
+        return new LoggingDiagnosticTestReporter(logger, (tr) -> tr.toString());
     }
 
-    @Bean
-    @ConditionalOnProperty(prefix="itest.reporter", name="url")
-    public Consumer<TestResult> restDiagnosticTestReporter() {
-        return new RestDiagnosticTestReporter(restTemplate(), logstashUrl, exitCodeReporter(), slackFormatter());
+    @Bean("exitCodeReporterConsumer")
+    public Consumer<TestResult> exitCodeReporterConsumer(ExitCodeReporter exitCodeReporter) {
+        return (tr) -> exitCodeReporter.register(tr.getTestStatus());
     }
 }

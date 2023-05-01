@@ -8,31 +8,20 @@
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
  * http://www.gnu.org/licenses/lgpl.html.
  */
-package org.codice.itest;
+package ${package};
 
-import org.codice.itest.reporter.ExitCodeReporter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.ApplicationContext;
 
-
-
-@SpringBootApplication
-@ComponentScan(basePackages = {"org.codice", "${itest.packagescan:org.codice}"})
-public class IntegrationTestApplication implements ExitCodeGenerator {
-
-    @Autowired
-    private ExitCodeReporter exitCodeReporter;
-
+@SpringBootApplication(scanBasePackages = {"org.codice", "${package}"})
+public class IntegrationTestApplication {
     public static void main(String... args) {
-        System.exit(SpringApplication.exit(SpringApplication.run(IntegrationTestApplication.class, args)));
-    }
+        ApplicationContext context = SpringApplication.run(IntegrationTestApplication.class, args);
+        ExitCodeGenerator exitCodeGenerator = context.getBean(ExitCodeGenerator.class);
 
-    @Override
-    public int getExitCode() {
-        return exitCodeReporter.getExitCode();
+        if (exitCodeGenerator != null)
+            System.exit(exitCodeGenerator.getExitCode());
     }
-
 }
