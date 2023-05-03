@@ -37,7 +37,6 @@ public class TestReporterConfiguration {
     @Bean("testReporter")
     @ConditionalOnProperty(prefix="codice.itest", name="loggerName")
     public Consumer<TestResult> loggingDiagnosticTestReporter() {
-        System.out.println(iTestConfigurationProperties.toString());
         Logger logger = LoggerFactory.getLogger(iTestConfigurationProperties.loggerName());
         return new LoggingDiagnosticTestReporter(logger, (tr) -> tr.toString());
     }
