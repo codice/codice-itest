@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 @Configuration
 public class TestReporterConfiguration {
-    private ITestConfigurationProperties iTestConfigurationProperties;
+    private final ITestConfigurationProperties iTestConfigurationProperties;
 
     public TestReporterConfiguration(ITestConfigurationProperties iTestConfigurationProperties) {
         this.iTestConfigurationProperties = iTestConfigurationProperties;
@@ -38,14 +38,14 @@ public class TestReporterConfiguration {
     @ConditionalOnProperty(prefix="codice.itest", name="loggerName")
     public Consumer<TestResult> loggingDiagnosticTestReporter() {
         Logger logger = LoggerFactory.getLogger(iTestConfigurationProperties.loggerName());
-        return new LoggingDiagnosticTestReporter(logger, (tr) -> tr.toString());
+        return new LoggingDiagnosticTestReporter(logger, Object::toString);
     }
 
     @Bean("testReporter")
     @ConditionalOnMissingBean
     public Consumer<TestResult> defaultLoggingDiagnosticTestReporter() {
         Logger logger = LoggerFactory.getLogger(LoggingDiagnosticTestReporter.class);
-        return new LoggingDiagnosticTestReporter(logger, (tr) -> tr.toString());
+        return new LoggingDiagnosticTestReporter(logger, Object::toString);
     }
 
     @Bean("exitCodeReporterConsumer")
