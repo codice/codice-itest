@@ -15,7 +15,7 @@ package org.codice.itest.api;
  */
 
 public enum TestStatus {
-    PASS(0), FAIL(1), ERROR(2);
+    PASS(0), FAIL(1), ERROR(2), NOT_EXECUTED(3);
 
     private int returnCode;
     TestStatus(int returnCode) {

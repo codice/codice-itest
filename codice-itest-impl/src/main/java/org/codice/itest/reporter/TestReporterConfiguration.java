@@ -14,11 +14,14 @@ import org.codice.itest.api.TestResult;
 import org.codice.itest.config.ITestConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Configuration
@@ -33,6 +36,11 @@ public class TestReporterConfiguration {
     public ExitCodeReporter exitCodeReporter(){
         return new ExitCodeReporter();
     }
+
+    @Value("${itest.tests:#{null}}")
+    private String tests;
+
+    private List<String> testNameList = Arrays.asList(tests.split(","));
 
     @Bean("testReporter")
     @ConditionalOnProperty(prefix="codice.itest", name="loggerName")
@@ -51,5 +59,10 @@ public class TestReporterConfiguration {
     @Bean("exitCodeReporterConsumer")
     public Consumer<TestResult> exitCodeReporterConsumer(ExitCodeReporter exitCodeReporter) {
         return (tr) -> exitCodeReporter.register(tr.getTestStatus());
+    }
+
+    @Bean("remainingTestsConsumer")
+    public Consumer<TestResult> remainingTestsReporterConsumer() {
+        return new RemainingTestsReporter(testNameList);
     }
 }
