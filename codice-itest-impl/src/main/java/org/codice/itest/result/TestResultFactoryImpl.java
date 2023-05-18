@@ -28,7 +28,6 @@ final class TestResultFactoryImpl implements TestResultFactory {
     private static final String START_TIME = "startTime";
     private static final String END_TIME = "endTime";
     private static final String EXCEPTION_MESSAGE = "exceptionMessage";
-    //private static final String NOT_EXECUTED_MESSAGE = "";
     private static final String STACK_TRACE = "stackTrace";
     private static final String TEST_STATUS = "testStatus";
     private final UUID runId;
@@ -68,7 +67,6 @@ final class TestResultFactoryImpl implements TestResultFactory {
 
     @Override
     public TestResult notExecuted(String testName) {
-        MDC.put(STACK_TRACE, "Not Executed");
         MDC.put(TEST_STATUS, TestStatus.NOT_EXECUTED.name());
         return new NotExecutedTestResultImpl(runId, testName);
     }

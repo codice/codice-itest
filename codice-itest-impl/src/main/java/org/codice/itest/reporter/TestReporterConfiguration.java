@@ -27,20 +27,17 @@ import java.util.function.Consumer;
 @Configuration
 public class TestReporterConfiguration {
     private final ITestConfigurationProperties iTestConfigurationProperties;
+    private List<String> testNameList;
 
     public TestReporterConfiguration(ITestConfigurationProperties iTestConfigurationProperties) {
         this.iTestConfigurationProperties = iTestConfigurationProperties;
+        this.testNameList = iTestConfigurationProperties.tests();
     }
 
     @Bean
     public ExitCodeReporter exitCodeReporter(){
         return new ExitCodeReporter();
     }
-
-    @Value("${itest.tests:#{null}}")
-    private String tests;
-
-    private List<String> testNameList = Arrays.asList(tests.split(","));
 
     @Bean("testReporter")
     @ConditionalOnProperty(prefix="codice.itest", name="loggerName")

@@ -35,8 +35,7 @@ final class LoggingDiagnosticTestReporter implements Consumer<TestResult> {
                 break;
             case FAIL: logger.warn(formattedResult);
                 break;
-            case ERROR: logger.error(formattedResult);
-            case NOT_EXECUTED: logger.error(formattedResult);
+            case ERROR, NOT_EXECUTED: logger.error(formattedResult);
         }
     }
 }
