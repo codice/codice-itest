@@ -14,7 +14,6 @@ import org.codice.itest.api.IntegrationTest;
 import org.codice.itest.api.TestResult;
 import org.codice.itest.api.TestResultFactory;
 import org.codice.itest.config.ITestConfigurationProperties;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -43,22 +42,25 @@ final class IntegrationTestService implements CommandLineRunner {
 
     private ExecutorService executorService;
 
+    private SkipAwareExecutorService skipAwareExecutorService;
+
     private TestResultFactory testResultFactory;
 
     private ITestConfigurationProperties iTestConfigurationProperties;
     /**
-     *
-     * @param tests - The set of all DiagnosticTest objects found in the Spring application context.
-     * @param testResultListenerList - A list of listeners to be notified upon test completion.
-     * @param executorService - Used to allow tests to be executed in parallel.
+     * @param tests                    - The set of all DiagnosticTest objects found in the Spring application context.
+     * @param testResultListenerList   - A list of listeners to be notified upon test completion.
+     * @param executorService          - Used to allow tests to be executed in parallel.
+     * @param skipAwareExecutorService - Used to allow tests to be executed in parallel while
      */
     public IntegrationTestService(Stream<IntegrationTest> tests,
                                   List<Consumer<TestResult>> testResultListenerList,
-                                  TestResultFactory testResultFactory,
+                                  SkipAwareExecutorService skipAwareExecutorService, TestResultFactory testResultFactory,
                                   ExecutorService executorService,
                                   ITestConfigurationProperties iTestConfigurationProperties) {
         this.tests = tests;
         this.testResultListenerList = testResultListenerList;
+        this.skipAwareExecutorService = skipAwareExecutorService;
         this.testResultFactory = testResultFactory;
         this.executorService = executorService;
         this.iTestConfigurationProperties = iTestConfigurationProperties;
@@ -71,9 +73,9 @@ final class IntegrationTestService implements CommandLineRunner {
      * @throws InterruptedException - When interrupted while waiting for a test to complete.
      */
     public void run(String[] args) throws InterruptedException {
-        this.tests.forEach(test -> executorService.execute(new TestExecutorTask(test,
+        this.tests.forEach(test -> skipAwareExecutorService.execute(new TestExecutorTask(test,
                 testResultListenerList, testResultFactory)));
-        executorService.shutdown();
-        executorService.awaitTermination(iTestConfigurationProperties.maxExecutionMinutes(), TimeUnit.MINUTES);
+        skipAwareExecutorService.shutdown();
+        skipAwareExecutorService.awaitTermination(iTestConfigurationProperties.maxExecutionMinutes(), TimeUnit.MINUTES);
     }
 }

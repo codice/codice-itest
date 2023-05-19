@@ -43,11 +43,9 @@ final class NotExecutedTestResultImpl extends BaseTestResult{
             return true;
         }
 
-        if (!(other instanceof NotExecutedTestResultImpl)) {
+        if (!(other instanceof NotExecutedTestResultImpl testResult)) {
             return false;
         }
-
-        NotExecutedTestResultImpl testResult = (NotExecutedTestResultImpl) other;
 
         return new EqualsBuilder().append(super.getRunId(), testResult.getRunId())
                 .append(super.getTestName(), testResult.getTestName())
