@@ -58,5 +58,5 @@ mvn jib:dockerBuild
 2) Run container: 
 
 ```shell
-docker images | grep hello-world | tr -s ' ' | cut -d " " -f3 | uniq
+docker run `docker images | grep hello-world | tr -s ' ' | cut -d " " -f3 | uniq`
 ```
