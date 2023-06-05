@@ -23,8 +23,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-@Component("SkipAwareExecutorService")
-public class SkipAwareExecutorService extends ThreadPoolExecutor {
+@Component("ITestExecutorService")
+public class ITestExecutorService extends ThreadPoolExecutor {
 
     @Value("${itest.tests:#{null}}")
     private String tests;
@@ -38,8 +38,8 @@ public class SkipAwareExecutorService extends ThreadPoolExecutor {
 
     private TestResultFactory testResultFactory;
 
-    public SkipAwareExecutorService(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-                                    BlockingQueue<Runnable> workQueue, List<Consumer<TestResult>> testResultListenerList, ITestConfigurationProperties iTestConfigurationProperties, RemainingTestsReporter remainingTestsReporter, TestResultFactory testResultFactory) {
+    public ITestExecutorService(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
+                                BlockingQueue<Runnable> workQueue, List<Consumer<TestResult>> testResultListenerList, ITestConfigurationProperties iTestConfigurationProperties, RemainingTestsReporter remainingTestsReporter, TestResultFactory testResultFactory) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         this.testResultListenerList = testResultListenerList;
         this.iTestConfigurationProperties = iTestConfigurationProperties;
