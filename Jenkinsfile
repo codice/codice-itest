@@ -8,6 +8,11 @@ pipeline {
             customWorkspace "/jenkins/workspace/${JOB_NAME}/${BUILD_NUMBER}"
         }
     }
+
+    tools {
+        jdk "jdk17"
+    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr:'25'))
         disableConcurrentBuilds()
@@ -15,17 +20,15 @@ pipeline {
         skipDefaultCheckout()
     }
     environment {
-        LARGE_MVN_OPTS = '-Xmx8192M -Xss128M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC '
+        LARGE_MVN_OPTS = '-Xmx8192M -Xss128M'
         LINUX_MVN_RANDOM = '-Djava.security.egd=file:/dev/./urandom'
         GITHUB_USERNAME = 'codice'
         GITHUB_TOKEN = credentials('github-api-cred')
         GITHUB_REPONAME = 'codice-itest'
-        DOCKERHUB_CREDS = credentials ('dockerhub-codicebot')
     }
     stages {
         stage('Setup') {
             steps {
-                dockerd {}
                 slackSend color: 'good', message: "STARTED: ${JOB_NAME} ${BUILD_NUMBER} ${BUILD_URL}"
                 postCommentIfPR("Internal build has been started, your results will be available at build completion.", "${GITHUB_USERNAME}", "${GITHUB_REPONAME}", "${GITHUB_TOKEN}")
             }
@@ -86,10 +89,8 @@ pipeline {
                 }
             }
         steps{
-                withCredentials([usernameColonPassword(credentialsId: 'dockerhub-codicebot', variable: 'DOCKERHUB_TOKEN')]) {
-                    withMaven(maven: 'maven-latest', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
-                        sh 'mvn deploy -B -DskipStatic=true -DskipTests=true -Djib.to.auth.username=$DOCKERHUB_CREDS_USR -Djib.to.auth.password=$DOCKERHUB_CREDS_PSW -P push'
-                    }
+                withMaven(maven: 'maven-latest', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
+                    sh 'mvn deploy -B -DskipStatic=true -DskipTests=true'
                 }
             }
         }
