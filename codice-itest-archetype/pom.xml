@@ -4,12 +4,12 @@
   <parent>
     <artifactId>codice-itest</artifactId>
     <groupId>org.codice</groupId>
-    <version>3.0.0</version>
+    <version>3.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>codice-itest-archetype</artifactId>
   <name>Codice :: ITest :: Archetype</name>
-  <version>3.0.0</version>
+  <version>1.0.0</version>
   <description>An archetype for a codice-itest application</description>
 
   <properties>
