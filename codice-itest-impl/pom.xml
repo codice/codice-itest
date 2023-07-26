@@ -16,7 +16,7 @@ http://www.gnu.org/licenses/lgpl.html.
     <parent>
         <groupId>org.codice</groupId>
         <artifactId>codice-itest</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0</version>
     </parent>
 
     <artifactId>codice-itest-impl</artifactId>
