@@ -40,4 +40,10 @@ public interface TestResultFactory {
      * @return an appropriate TestResult object.
      */
     TestResult error(String testName, Throwable throwable, Instant startTime, Instant endTime);
+
+    /**
+     * @param testName - the name of the test that did not run.
+     * @return an appropriate TestResult object.
+     */
+    TestResult notExecuted(String testName);
 }

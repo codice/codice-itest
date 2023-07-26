@@ -11,31 +11,26 @@
 package org.codice.itest.reporter;
 
 import org.codice.itest.api.TestResult;
-import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-final class LoggingDiagnosticTestReporter implements Consumer<TestResult> {
+public class RemainingTestsReporter implements Consumer<TestResult> {
+    private List<String> testNames;
+    private List<String> remainingTestNames;
 
-    private Logger logger;
-
-    private Function<TestResult, String> testResultFormatter;
-
-    public LoggingDiagnosticTestReporter(Logger logger, Function<TestResult, String> testResultFormatter) {
-        this.logger = logger;
-        this.testResultFormatter = testResultFormatter;
+    public RemainingTestsReporter(List<String> testNames){
+        this.testNames = testNames;
+        this.remainingTestNames = testNames;
     }
 
+    @Override
     public void accept(TestResult testResult) {
-        String formattedResult = testResultFormatter.apply(testResult);
-
-        switch (testResult.getTestStatus()) {
-            case PASS: logger.info(formattedResult);
-                break;
-            case FAIL: logger.warn(formattedResult);
-                break;
-            case ERROR, NOT_EXECUTED: logger.error(formattedResult);
+        if(testNames.contains(testResult.getTestName())){
+            remainingTestNames.remove(testResult.getTestName());
         }
     }
+
+    public List<String> getRemainingList(){return remainingTestNames;}
+
 }

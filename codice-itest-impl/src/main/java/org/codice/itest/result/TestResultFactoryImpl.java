@@ -65,6 +65,12 @@ final class TestResultFactoryImpl implements TestResultFactory {
         return new ErrorTestResultImpl(runId, testName, throwable, startTime, endTime);
     }
 
+    @Override
+    public TestResult notExecuted(String testName) {
+        MDC.put(TEST_STATUS, TestStatus.NOT_EXECUTED.name());
+        return new NotExecutedTestResultImpl(runId, testName);
+    }
+
     private void logTestResultCommonFields(String testName, Instant startTime, Instant endTime) {
         MDC.clear();
         MDC.put(TEST_NAME, testName);

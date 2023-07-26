@@ -19,14 +19,17 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 @Configuration
 public class TestReporterConfiguration {
     private final ITestConfigurationProperties iTestConfigurationProperties;
+    private List<String> testNameList;
 
     public TestReporterConfiguration(ITestConfigurationProperties iTestConfigurationProperties) {
         this.iTestConfigurationProperties = iTestConfigurationProperties;
+        this.testNameList = iTestConfigurationProperties.tests();
     }
 
     @Bean
@@ -51,5 +54,10 @@ public class TestReporterConfiguration {
     @Bean("exitCodeReporterConsumer")
     public Consumer<TestResult> exitCodeReporterConsumer(ExitCodeReporter exitCodeReporter) {
         return (tr) -> exitCodeReporter.register(tr.getTestStatus());
+    }
+
+    @Bean("remainingTestsConsumer")
+    public Consumer<TestResult> remainingTestsReporterConsumer() {
+        return new RemainingTestsReporter(testNameList);
     }
 }

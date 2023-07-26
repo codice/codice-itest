@@ -14,12 +14,10 @@ import org.codice.itest.api.IntegrationTest;
 import org.codice.itest.api.TestResult;
 import org.codice.itest.api.TestResultFactory;
 import org.codice.itest.config.ITestConfigurationProperties;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -41,26 +39,24 @@ final class IntegrationTestService implements CommandLineRunner {
 
     private List<Consumer<TestResult>> testResultListenerList;
 
-    private ExecutorService executorService;
+    private ITestExecutorService iTestExecutorService;
 
     private TestResultFactory testResultFactory;
 
     private ITestConfigurationProperties iTestConfigurationProperties;
     /**
-     *
-     * @param tests - The set of all DiagnosticTest objects found in the Spring application context.
-     * @param testResultListenerList - A list of listeners to be notified upon test completion.
-     * @param executorService - Used to allow tests to be executed in parallel.
+     * @param tests                    - The set of all DiagnosticTest objects found in the Spring application context.
+     * @param testResultListenerList   - A list of listeners to be notified upon test completion.
+     * @param iTestExecutorService - Used to allow tests to be executed in parallel while checking for not executed test results
      */
     public IntegrationTestService(Stream<IntegrationTest> tests,
                                   List<Consumer<TestResult>> testResultListenerList,
-                                  TestResultFactory testResultFactory,
-                                  ExecutorService executorService,
+                                  ITestExecutorService iTestExecutorService, TestResultFactory testResultFactory,
                                   ITestConfigurationProperties iTestConfigurationProperties) {
         this.tests = tests;
         this.testResultListenerList = testResultListenerList;
+        this.iTestExecutorService = iTestExecutorService;
         this.testResultFactory = testResultFactory;
-        this.executorService = executorService;
         this.iTestConfigurationProperties = iTestConfigurationProperties;
     }
 
@@ -71,9 +67,9 @@ final class IntegrationTestService implements CommandLineRunner {
      * @throws InterruptedException - When interrupted while waiting for a test to complete.
      */
     public void run(String[] args) throws InterruptedException {
-        this.tests.forEach(test -> executorService.execute(new TestExecutorTask(test,
+        this.tests.forEach(test -> iTestExecutorService.execute(new TestExecutorTask(test,
                 testResultListenerList, testResultFactory)));
-        executorService.shutdown();
-        executorService.awaitTermination(iTestConfigurationProperties.maxExecutionMinutes(), TimeUnit.MINUTES);
+        iTestExecutorService.shutdown();
+        iTestExecutorService.awaitTermination(iTestConfigurationProperties.maxExecutionMinutes(), TimeUnit.MINUTES);
     }
 }
